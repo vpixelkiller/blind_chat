@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login blind chat</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Bienvenido a blind chat</h1>
+        <p>Inicia sesión o crea una nueva cuenta</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Iniciar Sesión</button>
+        <button class="tab" data-tab="register">Registrarse</button>
+      </div>
+
+      <div id="loginForm" class="form-container active">
+        <form id="loginFormElement">
+          <div class="form-group">
+            <label for="loginUser">Usuario</label>
+            <input type="text" id="loginUser" name="user" required autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Contraseña</label>
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+          <button type="submit" class="btn-submit" id="loginSubmit">Iniciar Sesión</button>
+        </form>
+      </div>
+
+      <div id="registerForm" class="form-container">
+        <form id="registerFormElement">
+          <div class="form-group">
+            <label for="registerUser">Usuario</label>
+            <div class="user-display">
+              <span>Usuario: <strong id="generatedUser">-</strong></span>
+              <button type="button" class="btn-generate" id="generateUserBtn">Generar</button>
+            </div>
+            <input
+              type="text"
+              id="registerUser"
+              name="user"
+              required
+              autocomplete="username"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Contraseña</label>
+            <input
+              type="password"
+              id="registerPassword"
+              name="password"
+              required
+              autocomplete="new-password"
+            />
+          </div>
+          <button type="submit" class="btn-submit" id="registerSubmit">Registrarse</button>
+        </form>
+      </div>
+
+      <div id="message" class="message"></div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,4 +1,12 @@
 <?php
+ini_set('session.cookie_httponly', 1);
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    ini_set('session.cookie_secure', 1);
+}
+ini_set('session.use_strict_mode', 1);
+ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.gc_maxlifetime', 1800);
+
 session_start();
 header('Content-Type: application/json');
 
@@ -16,6 +24,11 @@ try {
 
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
+
+if (!is_array($data)) {
+    echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
+    exit;
+}
 
 $user = $data['user'] ?? '';
 $password = $data['password'] ?? '';

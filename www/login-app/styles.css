@@ -6,7 +6,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6d83ae;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -127,13 +127,13 @@ body {
 }
 
 .btn-generate {
-    background: #f0f0f0;
+    background: #6d83ae;
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
-    color: #666;
+    color: white;
     transition: all 0.3s;
 }
 
@@ -144,7 +144,7 @@ body {
 .btn-submit {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6d83ae;
     color: white;
     border: none;
     border-radius: 8px;

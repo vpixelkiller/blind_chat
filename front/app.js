@@ -33,7 +33,9 @@ function switchTab(tab) {
 
 generateUserBtn.addEventListener("click", async () => {
   try {
-    const response = await fetch("generate_user.php");
+    const response = await fetch(`${API_BASE_URL}/generate_user.php`, {
+      credentials: "include",
+    });
     const result = await response.json();
 
     if (result.success) {
@@ -59,11 +61,12 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("loginPassword").value;
 
   try {
-    const response = await fetch("login.php", {
+    const response = await fetch(`${API_BASE_URL}/login.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ user, password }),
     });
 
@@ -103,11 +106,12 @@ registerForm.addEventListener("submit", async (e) => {
   }
 
   try {
-    const response = await fetch("register.php", {
+    const response = await fetch(`${API_BASE_URL}/register.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ user, password }),
     });
 
@@ -144,3 +148,4 @@ function hideMessage() {
   messageDiv.className = "message";
   messageDiv.textContent = "";
 }
+

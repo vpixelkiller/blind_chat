@@ -2,6 +2,7 @@
 error_reporting(0);
 ini_set('display_errors', 0);
 
+require_once 'cors_config.php';
 require_once 'session_config.php';
 session_destroy();
 header('Content-Type: application/json');

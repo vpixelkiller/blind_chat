@@ -1,56 +1,75 @@
-# XAMPP Docker Setup
+# Blind chat project
 
-Este proyecto simula un entorno XAMPP usando Docker con Apache, PHP y MySQL.
+## This proyect tries to bring easily and private communication about personal problems with complete privacy for the user
 
-## Servicios Incluidos
+## Up & Run services
 
-- **Apache + PHP 8.2**: Servidor web con PHP (Puerto 80)
-- **MySQL 8.0**: Base de datos (Puerto 3306)
-- **phpMyAdmin**: Interfaz web para MySQL (Puerto 8888)
+### With docker
 
-## Credenciales MySQL
-
-- **Usuario root**: `root`
-- **Contraseña root**: `root`
-- **Usuario**: `usuario`
-- **Contraseña**: `password`
-- **Base de datos**: `testdb`
-
-## Uso
-
-### Iniciar los servicios
+- Backend:
 
 ```bash
 docker-compose up -d
 ```
 
-### Detener los servicios
+- When running `docker compose up`, the entire structure is started and, the first time, the database migration is executed.
+
+- Frontend:
+  You can serve these files with any local HTTP server:
 
 ```bash
-docker-compose down
+  python3 -m http.server 3000 ||
+  npx hptt-server -p 3000 ||
+  php -S localhost:3000
 ```
 
-### Ver logs
+### Access services
 
-```bash
-docker-compose logs -f
+- **[http://localhost:3000](http://localhost:3000)** in your browser. If the port is in use, npx will indicate its use on another port.
+- **phpMyAdmin**: [http://localhost:8888](http://localhost:8888)
+- **MySQL**: [localhost:3306](mysql://localhost:3306)
+
+## Included services
+
+- **Apache + PHP 8.2**: Web server in PHP (Puerto 80)
+- **MySQL 8.0**: Database (Puerto 3306)
+- **phpMyAdmin**: MySQL interface (Puerto 8888)
+
+## MySQL credentials
+
+- **User root**: `root`
+- **Password root**: `root`
+- **User**: `usuario`
+- **Password**: `password`
+- **DB name**: `testdb`
+
+## Structure
+
+### Backend and Frontend Separation
+
+- Backend:
+  -- www
+- Frontend:
+  -- `index.html` - Main page
+  -- `app.js` - Application logic
+  -- `styles.css` - Styles
+  -- `config.js` - Backend URL configuration
+- Root:
+  -- files needed for configuration and execution
+
+## Configuration
+
+Edit `config.js` to change the backend URL if needed:
+
+```javascript
+const API_BASE_URL = "http://localhost/login-app";
 ```
 
-### Acceder a los servicios
-
-- **Aplicación web**: http://localhost
-- **phpMyAdmin**: http://localhost:8888
-- **MySQL**: localhost:3306
-
-## Estructura de Carpetas
-
-- `www/`: Coloca aquí tus archivos PHP/HTML
-- `php.ini`: Configuración personalizada de PHP
-- `docker-compose.yml`: Configuración de Docker
-
-## Notas
+## Notes
 
 - Los archivos en `www/` se sincronizan automáticamente con el contenedor
 - Los datos de MySQL se persisten en un volumen Docker
 - Para reiniciar desde cero, usa: `docker-compose down -v`
-# blind_chat
+- The backend must be running at `http://localhost/login-app`
+- Session cookies will work correctly thanks to CORS configuration
+- Make sure the port in `config.js` matches the port where you serve the frontend

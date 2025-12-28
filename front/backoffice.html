@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backoffice - Blind Chat</title>
+    <link rel="stylesheet" href="/front/styles.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #2d1b4e 0%, #4a2c6d 50%, #6b3fa0 100%);
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+      .backoffice-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 40px;
+        background: rgba(45, 27, 78, 0.9);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(107, 63, 160, 0.4);
+        text-align: center;
+        border: 1px solid rgba(139, 92, 186, 0.5);
+        backdrop-filter: blur(10px);
+      }
+      h1 {
+        color: #b88ce8;
+        font-size: 32px;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 10px rgba(184, 140, 232, 0.5);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backoffice-container">
+      <h1 id="adminName">Cargando...</h1>
+    </div>
+    <script src="/front/config.js"></script>
+    <script>
+      const sessionId = localStorage.getItem("session_id");
+
+      const checkSession = async () => {
+        let data = null;
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/check_session.php`, {
+            credentials: "include",
+          });
+          data = await res.json();
+          if (data.success && data.user) {
+            return data;
+          }
+        } catch (error) {
+          // Cookie check failed, will try session_id
+        }
+
+        if (sessionId && (!data || !data.success)) {
+          try {
+            const res = await fetch(`${API_BASE_URL}/check_session_by_id.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ session_id: sessionId }),
+            });
+            data = await res.json();
+          } catch (error) {
+            // Session ID check failed
+          }
+        }
+
+        return data;
+      };
+
+      setTimeout(async () => {
+        const data = await checkSession();
+
+        if (data && data.success && data.user) {
+          if (data.is_admin) {
+            document.getElementById("adminName").textContent = `Backoffice - ${data.user}`;
+          } else {
+            window.location.href = "/front/user.html";
+          }
+        } else {
+          localStorage.removeItem("session_id");
+          window.location.href = "/front/index.html";
+        }
+      }, 500);
+    </script>
+  </body>
+</html>

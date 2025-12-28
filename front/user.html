@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuario - Blind Chat</title>
+    <link rel="stylesheet" href="/front/styles.css" />
+    <style>
+      body {
+        background: #6d83ae;
+      }
+      .user-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="user-container">
+      <h1 id="userName">Cargando...</h1>
+    </div>
+    <script src="/front/config.js"></script>
+    <script>
+      const sessionId = localStorage.getItem("session_id");
+
+      const checkSession = async () => {
+        let data = null;
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/check_session.php`, {
+            credentials: "include",
+          });
+          data = await res.json();
+          if (data.success && data.user) {
+            return data;
+          }
+        } catch (error) {
+          // Cookie check failed, will try session_id
+        }
+
+        if (sessionId && (!data || !data.success)) {
+          try {
+            const res = await fetch(`${API_BASE_URL}/check_session_by_id.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ session_id: sessionId }),
+            });
+            data = await res.json();
+          } catch (error) {
+            // Session ID check failed
+          }
+        }
+
+        return data;
+      };
+
+      setTimeout(async () => {
+        const data = await checkSession();
+
+        if (data && data.success && data.user) {
+          document.getElementById("userName").textContent = `Bienvenido, ${data.user}`;
+        } else {
+          localStorage.removeItem("session_id");
+          window.location.href = "/front/index.html";
+        }
+      }, 500);
+    </script>
+  </body>
+</html>

@@ -73,10 +73,26 @@ loginForm.addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.success) {
+      // Try to get session_id from response body first
+      let sessionId = result.session_id;
+      
+      // If empty, try to get from X-Session-ID header
+      if (!sessionId) {
+        sessionId = response.headers.get('X-Session-ID');
+      }
+      
+      if (sessionId) {
+        localStorage.setItem('session_id', sessionId);
+      }
+      
       showMessage("Login exitoso.", "success");
       setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+        if (result.is_admin === true) {
+          window.location.href = "/front/backoffice.html";
+        } else {
+          window.location.href = "/front/user.html";
+        }
+      }, 500);
     } else {
       showMessage(result.message || "Usuario o contraseña incorrectos", "error");
     }

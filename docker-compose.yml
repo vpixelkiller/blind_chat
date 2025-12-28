@@ -7,14 +7,21 @@ services:
     volumes:
       - ./www:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
+      - ./.env:/root/.env:ro
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
     command: >
       bash -c "sed -ri -e 's!/var/www/html!$${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
       && sed -ri -e 's!/var/www/!$${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
       && docker-php-ext-install mysqli pdo pdo_mysql
+      && sleep 3
+      && chmod +x /var/www/html/init_admin.sh
+      && /var/www/html/init_admin.sh
       && apache2-foreground"
 
   mysql:
@@ -22,14 +29,23 @@ services:
     container_name: xampp-mysql
     ports:
       - "3306:3306"
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: usuario
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./www/database.sql:/docker-entrypoint-initdb.d/database.sql
+      - ./.env:/root/.env:ro
+    healthcheck:
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

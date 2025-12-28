@@ -1,9 +1,9 @@
 <?php
 function getDBConnection() {
     $host = 'mysql';
-    $db   = 'testdb';
-    $user = 'usuario';
-    $pass = 'password';
+    $db   = getenv('MYSQL_DATABASE') ?: 'testdb';
+    $user = getenv('MYSQL_USER') ?: 'usuario';
+    $pass = getenv('MYSQL_PASSWORD') ?: 'password';
     
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);

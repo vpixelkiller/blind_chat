@@ -1,0 +1,14 @@
+{
+  "name": "blind-chat",
+  "version": "1.0.0",
+  "description": "Blind Chat Project",
+  "scripts": {
+    "init-admin": "node init_admin.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1"
+  }
+}
+

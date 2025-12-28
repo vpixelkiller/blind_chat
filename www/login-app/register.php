@@ -6,15 +6,10 @@ require_once 'cors_config.php';
 require_once 'session_config.php';
 header('Content-Type: application/json');
 
-$host = 'mysql';
-$db   = 'testdb';
-$user = 'usuario';
-$pass = 'password';
+require_once __DIR__ . '/../db_config.php';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
+$pdo = getDBConnection();
+if (!$pdo) {
     echo json_encode(['success' => false, 'message' => 'Error de conexión a la base de datos']);
     exit;
 }
@@ -35,11 +30,11 @@ if (empty($username) || empty($password)) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE user = ?");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->execute([$username]);
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($usuario) {
+if ($user) {
     echo json_encode(['success' => false, 'message' => 'El usuario ya existe']);
     exit;
 }
@@ -47,7 +42,7 @@ if ($usuario) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO usuarios (user, password) VALUES (?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
     $stmt->execute([$username, $hash]);
     echo json_encode(['success' => true, 'message' => 'Usuario registrado correctamente']);
 } catch (PDOException $e) {

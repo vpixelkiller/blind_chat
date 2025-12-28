@@ -6,15 +6,10 @@ require_once 'cors_config.php';
 require_once 'session_config.php';
 header('Content-Type: application/json');
 
-$host = 'mysql';
-$db   = 'testdb';
-$user = 'usuario';
-$pass = 'password';
+require_once __DIR__ . '/../db_config.php';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
+$pdo = getDBConnection();
+if (!$pdo) {
     echo json_encode(['success' => false, 'message' => 'Error de conexión a la base de datos']);
     exit;
 }
@@ -30,12 +25,13 @@ if (!is_array($data)) {
 $username = $data['user'] ?? '';
 $password = $data['password'] ?? '';
 
-$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE user = ?");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->execute([$username]);
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($usuario && password_verify($password, $usuario['password'])) {
+if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user'] = $username;
+    $_SESSION['user_id'] = $user['id'];
     $_SESSION['login_time'] = time();
     echo json_encode(['success' => true, 'message' => 'Login exitoso']);
 } else {

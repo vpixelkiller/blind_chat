@@ -73,10 +73,16 @@ loginForm.addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.success) {
-      // Try to get session_id from response body first
+      if (result.is_admin === true) {
+        showMessage("Usuario administrador detectado. Por favor, usa el acceso de backoffice.", "info");
+        setTimeout(() => {
+          window.location.href = "/front/backoffice.html";
+        }, 1500);
+        return;
+      }
+
       let sessionId = result.session_id;
       
-      // If empty, try to get from X-Session-ID header
       if (!sessionId) {
         sessionId = response.headers.get('X-Session-ID');
       }
@@ -87,11 +93,7 @@ loginForm.addEventListener("submit", async (e) => {
       
       showMessage("Login exitoso.", "success");
       setTimeout(() => {
-        if (result.is_admin === true) {
-          window.location.href = "/front/backoffice.html";
-        } else {
-          window.location.href = "/front/user.html";
-        }
+        window.location.href = "/front/user.html";
       }, 500);
     } else {
       showMessage(result.message || "Usuario o contraseña incorrectos", "error");

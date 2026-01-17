@@ -50,7 +50,8 @@ docker-compose up -d
 - Backend:
   -- www
 - Frontend:
-  -- `index.html` - Main page
+  -- `front/index.html` - Main user page
+  -- `front/backoffice.html` - Backoffice page
   -- `app.js` - Application logic
   -- `styles.css` - Styles
   -- `config.js` - Backend URL configuration
